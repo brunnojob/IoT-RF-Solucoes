@@ -1,26 +1,24 @@
 /**
  * Index.tsx — Página principal do Dashboard IoT
  * 
- * Exibe dados de sensores em tempo real com:
- * - Cards de temperatura, umidade, presença e estoque
- * - Gráfico histórico de temperatura e umidade
- * - Tabela dos últimos registros
- * - Indicador de conexão em tempo real
- * 
- * Os dados são simulados. Para produção, integre com Supabase Realtime.
+ * Exibe dados de sensores em tempo real + controle de estoque.
+ * Integrado com Supabase Realtime (ou dados simulados como fallback).
  */
 
 import { Thermometer, Droplets, Package } from 'lucide-react';
 import { useIoTData } from '@/hooks/useIoTData';
+import { useEstoque } from '@/hooks/useEstoque';
 import { SensorCard } from '@/components/iot/SensorCard';
 import { PresenceCard } from '@/components/iot/PresenceCard';
 import { ConnectionIndicator } from '@/components/iot/ConnectionIndicator';
 import { HistoryChart } from '@/components/iot/HistoryChart';
 import { ReadingsTable } from '@/components/iot/ReadingsTable';
+import { EstoqueSection } from '@/components/iot/EstoqueSection';
+import { MovimentacoesTable } from '@/components/iot/MovimentacoesTable';
 
 const Index = () => {
-  // Hook que gerencia os dados IoT (simulados ou Supabase)
   const { readings, latestReading, isConnected } = useIoTData();
+  const { produtos, movimentacoes, loading, adicionarProduto, entradaEstoque, saidaEstoque } = useEstoque();
 
   return (
     <div className="min-h-screen bg-background p-4 md:p-6 lg:p-8">
@@ -40,9 +38,7 @@ const Index = () => {
         </header>
 
         {/* === CARDS DE SENSORES === */}
-        {/* Grid responsivo: 1 coluna mobile, 2 tablet, 4 desktop */}
         <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {/* Card de Temperatura */}
           <SensorCard
             title="Temperatura"
             value={latestReading?.temperatura ?? '--'}
@@ -50,8 +46,6 @@ const Index = () => {
             icon={<Thermometer className="w-4 h-4" />}
             variant="primary"
           />
-
-          {/* Card de Umidade */}
           <SensorCard
             title="Umidade"
             value={latestReading?.umidade ?? '--'}
@@ -59,14 +53,10 @@ const Index = () => {
             icon={<Droplets className="w-4 h-4" />}
             variant="accent"
           />
-
-          {/* Card de Presença */}
           <PresenceCard detected={latestReading?.presenca ?? false} />
-
-          {/* Card de Estoque */}
           <SensorCard
-            title="Estoque"
-            value={latestReading?.estoque ?? '--'}
+            title="Estoque Total"
+            value={produtos.reduce((sum, p) => sum + p.quantidade_atual, 0) || '--'}
             unit="un"
             icon={<Package className="w-4 h-4" />}
             variant="warning"
@@ -78,15 +68,30 @@ const Index = () => {
           <HistoryChart readings={readings} />
         </section>
 
-        {/* === TABELA DE REGISTROS === */}
+        {/* === CONTROLE DE ESTOQUE === */}
+        <section>
+          <EstoqueSection
+            produtos={produtos}
+            loading={loading}
+            onAdicionarProduto={adicionarProduto}
+            onEntrada={entradaEstoque}
+            onSaida={saidaEstoque}
+          />
+        </section>
+
+        {/* === HISTÓRICO DE MOVIMENTAÇÕES === */}
+        <section>
+          <MovimentacoesTable movimentacoes={movimentacoes} produtos={produtos} />
+        </section>
+
+        {/* === TABELA DE REGISTROS IoT === */}
         <section>
           <ReadingsTable readings={readings} />
         </section>
 
         {/* === RODAPÉ === */}
         <footer className="text-center text-xs text-muted-foreground py-4 border-t border-border">
-          Dashboard IoT — Dados simulados para demonstração.
-          Integre com Supabase Realtime e ESP32 para produção.
+          Dashboard IoT — Configure SUPABASE_URL e SUPABASE_ANON_KEY em src/lib/supabase.ts para dados reais.
         </footer>
       </div>
     </div>
