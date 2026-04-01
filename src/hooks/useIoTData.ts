@@ -1,57 +1,73 @@
 /**
  * useIoTData.ts
  * 
- * Hook personalizado para gerenciar dados IoT.
- * Atualmente usa dados simulados — para produção,
- * substitua pelo Supabase Realtime.
- * 
- * Exemplo com Supabase Realtime:
- * 
- *   const supabase = createClient(
- *     'SUA_SUPABASE_URL',   // <-- Coloque sua URL aqui
- *     'SUA_SUPABASE_KEY'    // <-- Coloque sua chave anon aqui
- *   );
- * 
- *   supabase
- *     .channel('sensor_data')
- *     .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'sensor_readings' }, 
- *       (payload) => { // novo dado })
- *     .subscribe();
+ * Hook para dados IoT com suporte a Supabase Realtime.
+ * Se o Supabase estiver configurado, escuta dados reais.
+ * Caso contrário, usa dados simulados como fallback.
  */
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { SensorReading, generateInitialData, generateNewReading } from '@/lib/simulatedData';
+import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 
 export function useIoTData() {
   const [readings, setReadings] = useState<SensorReading[]>([]);
   const [isConnected, setIsConnected] = useState(false);
 
-  // Inicializa com dados históricos
   useEffect(() => {
-    const data = generateInitialData(20);
-    setReadings(data);
-    // Simula conexão após 1 segundo
-    const timer = setTimeout(() => setIsConnected(true), 1000);
-    return () => clearTimeout(timer);
+    if (isSupabaseConfigured()) {
+      // === MODO SUPABASE REAL ===
+      // Busca dados existentes
+      supabase
+        .from('sensor_readings')
+        .select('*')
+        .order('created_at', { ascending: true })
+        .limit(50)
+        .then(({ data, error }) => {
+          if (!error && data) {
+            setReadings(data as SensorReading[]);
+            setIsConnected(true);
+          }
+        });
+
+      // Escuta novos dados em tempo real
+      const channel = supabase
+        .channel('sensor_readings_realtime')
+        .on(
+          'postgres_changes',
+          { event: 'INSERT', schema: 'public', table: 'sensor_readings' },
+          (payload) => {
+            const newReading = payload.new as SensorReading;
+            setReadings(prev => [...prev, newReading].slice(-50));
+          }
+        )
+        .subscribe((status) => {
+          setIsConnected(status === 'SUBSCRIBED');
+        });
+
+      return () => {
+        supabase.removeChannel(channel);
+      };
+    } else {
+      // === MODO SIMULADO (fallback) ===
+      const data = generateInitialData(20);
+      setReadings(data);
+      const timer = setTimeout(() => setIsConnected(true), 1000);
+
+      const interval = setInterval(() => {
+        setReadings(prev => {
+          const newReading = generateNewReading(prev.length);
+          return [...prev, newReading].slice(-50);
+        });
+      }, 3000);
+
+      return () => {
+        clearTimeout(timer);
+        clearInterval(interval);
+      };
+    }
   }, []);
 
-  // Simula recebimento de dados em tempo real (a cada 3 segundos)
-  useEffect(() => {
-    if (!isConnected) return;
-
-    const interval = setInterval(() => {
-      setReadings(prev => {
-        const newReading = generateNewReading(prev.length);
-        // Mantém últimos 50 registros
-        const updated = [...prev, newReading];
-        return updated.slice(-50);
-      });
-    }, 3000);
-
-    return () => clearInterval(interval);
-  }, [isConnected]);
-
-  // Última leitura (mais recente)
   const latestReading = readings[readings.length - 1] ?? null;
 
   return { readings, latestReading, isConnected };
