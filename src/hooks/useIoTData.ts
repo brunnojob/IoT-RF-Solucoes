@@ -15,7 +15,7 @@
  *   supabase
  *     .channel('sensor_data')
  *     .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'sensor_readings' }, 
- *       (payload) => { /* novo dado */ })
+ *       (payload) => { // novo dado })
  *     .subscribe();
  */
 
