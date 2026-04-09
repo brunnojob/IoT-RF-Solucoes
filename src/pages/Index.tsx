@@ -37,7 +37,12 @@ const Index = () => {
               Monitoramento empresarial em tempo real — Arduino/ESP32
             </p>
           </div>
-          <ConnectionIndicator connected={isConnected} />
+          <div className="flex items-center gap-3">
+            <ConnectionIndicator connected={isConnected} />
+            <Button variant="outline" size="sm" onClick={logout}>
+              <LogOut className="w-4 h-4 mr-1" /> Sair
+            </Button>
+          </div>
         </header>
 
         {/* === CARDS DE SENSORES === */}
