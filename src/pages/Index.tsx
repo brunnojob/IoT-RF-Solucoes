@@ -91,7 +91,7 @@ const Index = () => {
 
         {/* === RODAPÉ === */}
         <footer className="text-center text-xs text-muted-foreground py-4 border-t border-border">
-          Dashboard IoT — Configure SUPABASE_URL e SUPABASE_ANON_KEY em src/lib/supabase.ts para dados reais.
+          Dashboard IoT — Monitoramento Empresarial em Tempo Real
         </footer>
       </div>
     </div>
