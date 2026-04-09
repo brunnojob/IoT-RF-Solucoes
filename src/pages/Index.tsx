@@ -5,8 +5,10 @@
  * Integrado com Supabase Realtime (ou dados simulados como fallback).
  */
 
-import { Thermometer, Droplets, Package } from 'lucide-react';
+import { Thermometer, Droplets, Package, LogOut } from 'lucide-react';
 import { useIoTData } from '@/hooks/useIoTData';
+import { useAuth } from '@/contexts/AuthContext';
+import { Button } from '@/components/ui/button';
 import { useEstoque } from '@/hooks/useEstoque';
 import { SensorCard } from '@/components/iot/SensorCard';
 import { PresenceCard } from '@/components/iot/PresenceCard';
@@ -19,6 +21,7 @@ import { MovimentacoesTable } from '@/components/iot/MovimentacoesTable';
 const Index = () => {
   const { readings, latestReading, isConnected } = useIoTData();
   const { produtos, movimentacoes, loading, adicionarProduto, entradaEstoque, saidaEstoque } = useEstoque();
+  const { logout } = useAuth();
 
   return (
     <div className="min-h-screen bg-background p-4 md:p-6 lg:p-8">
@@ -34,7 +37,12 @@ const Index = () => {
               Monitoramento empresarial em tempo real — Arduino/ESP32
             </p>
           </div>
-          <ConnectionIndicator connected={isConnected} />
+          <div className="flex items-center gap-3">
+            <ConnectionIndicator connected={isConnected} />
+            <Button variant="outline" size="sm" onClick={logout}>
+              <LogOut className="w-4 h-4 mr-1" /> Sair
+            </Button>
+          </div>
         </header>
 
         {/* === CARDS DE SENSORES === */}
