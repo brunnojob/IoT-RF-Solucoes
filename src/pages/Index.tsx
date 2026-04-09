@@ -21,6 +21,7 @@ import { MovimentacoesTable } from '@/components/iot/MovimentacoesTable';
 const Index = () => {
   const { readings, latestReading, isConnected } = useIoTData();
   const { produtos, movimentacoes, loading, adicionarProduto, entradaEstoque, saidaEstoque } = useEstoque();
+  const { logout } = useAuth();
 
   return (
     <div className="min-h-screen bg-background p-4 md:p-6 lg:p-8">
