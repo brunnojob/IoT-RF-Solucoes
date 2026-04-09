@@ -5,8 +5,10 @@
  * Integrado com Supabase Realtime (ou dados simulados como fallback).
  */
 
-import { Thermometer, Droplets, Package } from 'lucide-react';
+import { Thermometer, Droplets, Package, LogOut } from 'lucide-react';
 import { useIoTData } from '@/hooks/useIoTData';
+import { useAuth } from '@/contexts/AuthContext';
+import { Button } from '@/components/ui/button';
 import { useEstoque } from '@/hooks/useEstoque';
 import { SensorCard } from '@/components/iot/SensorCard';
 import { PresenceCard } from '@/components/iot/PresenceCard';
