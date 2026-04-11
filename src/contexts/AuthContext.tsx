@@ -1,8 +1,3 @@
-/**
- * AuthContext.tsx — Contexto de autenticação simples
- * Login com credenciais fixas: admin / admin
- */
-
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
 interface AuthContextType {

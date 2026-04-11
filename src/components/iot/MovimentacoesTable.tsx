@@ -1,10 +1,3 @@
-/**
- * MovimentacoesTable.tsx
- * 
- * Tabela de histórico de movimentações de estoque.
- * Mostra entrada/saída com indicadores visuais.
- */
-
 import { ArrowDownCircle, ArrowUpCircle } from 'lucide-react';
 import { Movimentacao, Produto } from '@/hooks/useEstoque';
 
@@ -24,7 +17,6 @@ export function MovimentacoesTable({ movimentacoes, produtos }: MovimentacoesTab
       <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wider mb-4">
         Histórico de Movimentações
       </h3>
-
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>

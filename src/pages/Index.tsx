@@ -1,10 +1,3 @@
-/**
- * Index.tsx — Página principal do Dashboard IoT
- * 
- * Exibe dados de sensores em tempo real + controle de estoque.
- * Integrado com Supabase Realtime (ou dados simulados como fallback).
- */
-
 import { Thermometer, Droplets, Package, LogOut } from 'lucide-react';
 import { useIoTData } from '@/hooks/useIoTData';
 import { useAuth } from '@/contexts/AuthContext';
@@ -27,7 +20,6 @@ const Index = () => {
     <div className="min-h-screen bg-background p-4 md:p-6 lg:p-8">
       <div className="max-w-7xl mx-auto space-y-6">
 
-        {/* === CABEÇALHO === */}
         <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <h1 className="text-2xl font-bold text-foreground">
@@ -45,7 +37,6 @@ const Index = () => {
           </div>
         </header>
 
-        {/* === CARDS DE SENSORES === */}
         <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <SensorCard
             title="Temperatura"
@@ -71,12 +62,10 @@ const Index = () => {
           />
         </section>
 
-        {/* === GRÁFICO HISTÓRICO === */}
         <section>
           <HistoryChart readings={readings} />
         </section>
 
-        {/* === CONTROLE DE ESTOQUE === */}
         <section>
           <EstoqueSection
             produtos={produtos}
@@ -87,17 +76,14 @@ const Index = () => {
           />
         </section>
 
-        {/* === HISTÓRICO DE MOVIMENTAÇÕES === */}
         <section>
           <MovimentacoesTable movimentacoes={movimentacoes} produtos={produtos} />
         </section>
 
-        {/* === TABELA DE REGISTROS IoT === */}
         <section>
           <ReadingsTable readings={readings} />
         </section>
 
-        {/* === RODAPÉ === */}
         <footer className="text-center text-xs text-muted-foreground py-4 border-t border-border">
           Dashboard IoT — Monitoramento Empresarial em Tempo Real
         </footer>
