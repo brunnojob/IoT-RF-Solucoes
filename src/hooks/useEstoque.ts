@@ -1,11 +1,3 @@
-/**
- * useEstoque.ts
- * 
- * Hook para controle de estoque com Supabase Realtime.
- * Gerencia produtos e movimentações (entrada/saída).
- * Fallback local quando Supabase não está configurado.
- */
-
 import { useState, useEffect, useCallback } from 'react';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 import { toast } from '@/hooks/use-toast';
@@ -31,13 +23,11 @@ export function useEstoque() {
   const [movimentacoes, setMovimentacoes] = useState<Movimentacao[]>([]);
   const [loading, setLoading] = useState(false);
 
-  // Carrega dados iniciais
   useEffect(() => {
     if (isSupabaseConfigured()) {
       loadProdutos();
       loadMovimentacoes();
 
-      // Realtime: produtos
       const prodChannel = supabase
         .channel('produtos_realtime')
         .on('postgres_changes', { event: '*', schema: 'public', table: 'produtos' }, () => {
@@ -45,7 +35,6 @@ export function useEstoque() {
         })
         .subscribe();
 
-      // Realtime: movimentações
       const movChannel = supabase
         .channel('movimentacoes_realtime')
         .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'movimentacoes_estoque' }, (payload) => {
@@ -58,7 +47,6 @@ export function useEstoque() {
         supabase.removeChannel(movChannel);
       };
     } else {
-      // Dados de demonstração
       setProdutos([
         { id: '1', nome: 'Sensor DHT11', quantidade_atual: 25, created_at: new Date().toISOString() },
         { id: '2', nome: 'ESP32 DevKit', quantidade_atual: 10, created_at: new Date().toISOString() },
@@ -68,10 +56,7 @@ export function useEstoque() {
   }, []);
 
   async function loadProdutos() {
-    const { data } = await supabase
-      .from('produtos')
-      .select('*')
-      .order('nome');
+    const { data } = await supabase.from('produtos').select('*').order('nome');
     if (data) setProdutos(data);
   }
 
@@ -84,17 +69,13 @@ export function useEstoque() {
     if (data) setMovimentacoes(data);
   }
 
-  /** Adiciona um novo produto ao estoque */
   const adicionarProduto = useCallback(async (nome: string, quantidade: number) => {
     setLoading(true);
     try {
       if (isSupabaseConfigured()) {
-        const { error } = await supabase
-          .from('produtos')
-          .insert({ nome, quantidade_atual: quantidade });
+        const { error } = await supabase.from('produtos').insert({ nome, quantidade_atual: quantidade });
         if (error) throw error;
       } else {
-        // Modo local
         setProdutos(prev => [...prev, {
           id: String(Date.now()),
           nome,
@@ -110,18 +91,15 @@ export function useEstoque() {
     }
   }, []);
 
-  /** Registra entrada de estoque */
   const entradaEstoque = useCallback(async (produtoId: string, quantidade: number, observacao?: string) => {
     setLoading(true);
     try {
       if (isSupabaseConfigured()) {
-        // Registra movimentação
         const { error: movError } = await supabase
           .from('movimentacoes_estoque')
           .insert({ produto_id: produtoId, tipo: 'entrada', quantidade, observacao });
         if (movError) throw movError;
 
-        // Atualiza quantidade
         const produto = produtos.find(p => p.id === produtoId);
         if (produto) {
           const { error } = await supabase
@@ -131,7 +109,6 @@ export function useEstoque() {
           if (error) throw error;
         }
       } else {
-        // Modo local
         setProdutos(prev => prev.map(p =>
           p.id === produtoId ? { ...p, quantidade_atual: p.quantidade_atual + quantidade } : p
         ));
@@ -152,12 +129,10 @@ export function useEstoque() {
     }
   }, [produtos]);
 
-  /** Registra saída de estoque */
   const saidaEstoque = useCallback(async (produtoId: string, quantidade: number, observacao?: string) => {
     const produto = produtos.find(p => p.id === produtoId);
     if (!produto) return;
 
-    // Impede estoque negativo
     if (quantidade > produto.quantidade_atual) {
       toast({
         title: '⚠️ Estoque insuficiente',

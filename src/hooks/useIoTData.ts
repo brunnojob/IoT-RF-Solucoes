@@ -1,11 +1,3 @@
-/**
- * useIoTData.ts
- * 
- * Hook para dados IoT com suporte a Supabase Realtime.
- * Se o Supabase estiver configurado, escuta dados reais.
- * Caso contrário, usa dados simulados como fallback.
- */
-
 import { useState, useEffect } from 'react';
 import { SensorReading, generateInitialData, generateNewReading } from '@/lib/simulatedData';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';
@@ -16,8 +8,6 @@ export function useIoTData() {
 
   useEffect(() => {
     if (isSupabaseConfigured()) {
-      // === MODO SUPABASE REAL ===
-      // Busca dados existentes
       supabase
         .from('sensor_readings')
         .select('*')
@@ -30,7 +20,6 @@ export function useIoTData() {
           }
         });
 
-      // Escuta novos dados em tempo real
       const channel = supabase
         .channel('sensor_readings_realtime')
         .on(
@@ -49,7 +38,6 @@ export function useIoTData() {
         supabase.removeChannel(channel);
       };
     } else {
-      // === MODO SIMULADO (fallback) ===
       const data = generateInitialData(20);
       setReadings(data);
       const timer = setTimeout(() => setIsConnected(true), 1000);

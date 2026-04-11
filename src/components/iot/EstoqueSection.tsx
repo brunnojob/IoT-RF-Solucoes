@@ -1,12 +1,5 @@
-/**
- * EstoqueSection.tsx
- * 
- * Seção de controle de estoque no dashboard.
- * Exibe produtos, permite entrada/saída e mostra o formulário de novo produto.
- */
-
 import { useState } from 'react';
-import { Package, Plus, Minus, ArrowUpCircle, ArrowDownCircle } from 'lucide-react';
+import { Package, Plus, ArrowUpCircle, ArrowDownCircle } from 'lucide-react';
 import { Produto } from '@/hooks/useEstoque';
 
 interface EstoqueSectionProps {
@@ -21,8 +14,6 @@ export function EstoqueSection({ produtos, loading, onAdicionarProduto, onEntrad
   const [novoNome, setNovoNome] = useState('');
   const [novaQtd, setNovaQtd] = useState('');
   const [showForm, setShowForm] = useState(false);
-
-  // Estado de movimentação por produto
   const [movQtd, setMovQtd] = useState<Record<string, string>>({});
 
   const handleAddProduto = () => {
@@ -35,7 +26,6 @@ export function EstoqueSection({ produtos, loading, onAdicionarProduto, onEntrad
 
   return (
     <div className="bg-card rounded-lg border border-border p-5">
-      {/* Cabeçalho */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <Package className="w-4 h-4 text-warning-custom" />
@@ -53,7 +43,6 @@ export function EstoqueSection({ produtos, loading, onAdicionarProduto, onEntrad
         </button>
       </div>
 
-      {/* Formulário novo produto */}
       {showForm && (
         <div className="flex flex-col sm:flex-row gap-2 mb-4 p-3 rounded-md bg-secondary/50 border border-border">
           <input
@@ -84,7 +73,6 @@ export function EstoqueSection({ produtos, loading, onAdicionarProduto, onEntrad
         </div>
       )}
 
-      {/* Lista de produtos */}
       <div className="space-y-2">
         {produtos.length === 0 ? (
           <p className="text-sm text-muted-foreground text-center py-4">
@@ -97,7 +85,6 @@ export function EstoqueSection({ produtos, loading, onAdicionarProduto, onEntrad
               className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 p-3 rounded-md
                          bg-secondary/30 border border-border/50 hover:border-border transition-colors"
             >
-              {/* Info do produto */}
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-foreground truncate">{produto.nome}</p>
                 <p className="text-xs text-muted-foreground">
@@ -109,8 +96,6 @@ export function EstoqueSection({ produtos, loading, onAdicionarProduto, onEntrad
                   </span> un
                 </p>
               </div>
-
-              {/* Controles de movimentação */}
               <div className="flex items-center gap-2">
                 <input
                   type="number"

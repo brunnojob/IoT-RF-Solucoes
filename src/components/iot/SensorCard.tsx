@@ -1,10 +1,3 @@
-/**
- * SensorCard.tsx
- * 
- * Card reutilizável para exibir um valor de sensor.
- * Usa tokens do design system para cores e estilos.
- */
-
 import { ReactNode } from 'react';
 
 interface SensorCardProps {
@@ -32,15 +25,12 @@ const valueClasses: Record<string, string> = {
 export function SensorCard({ title, value, unit, icon, variant = 'primary' }: SensorCardProps) {
   return (
     <div className={`bg-card rounded-lg border p-5 transition-all duration-300 ${variantClasses[variant]}`}>
-      {/* Cabeçalho do card com ícone e título */}
       <div className="flex items-center gap-2 mb-3">
         <span className={valueClasses[variant]}>{icon}</span>
         <span className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
           {title}
         </span>
       </div>
-
-      {/* Valor principal do sensor */}
       <div className="flex items-baseline gap-1">
         <span className={`text-3xl font-bold font-mono ${valueClasses[variant]}`}>
           {value}

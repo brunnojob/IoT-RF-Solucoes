@@ -1,8 +1,3 @@
-/**
- * Login.tsx — Tela de login do painel IoT
- * Credenciais: admin / admin
- */
-
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
