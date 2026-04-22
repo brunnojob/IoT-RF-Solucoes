@@ -9,8 +9,8 @@ import paho.mqtt.client as mqtt
 from supabase import create_client
 
 # Configurações Supabase
-SUPABASE_URL = "https://saglrwspvaaqjculaplg.supabase.co"
-SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNhZ2xyd3NwdmFhcWpjdWxhcGxnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwMDcyMTMsImV4cCI6MjA5MDU4MzIxM30.adXTMTTdFzArpQztW4QJ1UyW4fo4qvZJesGJOx2ymz8"
+SUPABASE_URL = "https://ngzkahxyraioonptmawd.supabase.co"
+SUPABASE_KEY = "sb_publishable_D6MsiNnKgrENOOB6sc5Xig_Lk7lD0yu"
 
 # Configurações MQTT
 MQTT_BROKER = "192.168.206.21"
