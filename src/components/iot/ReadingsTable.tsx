@@ -20,7 +20,7 @@ export function ReadingsTable({ readings }: ReadingsTableProps) {
               <th className="text-right py-2 px-3 text-muted-foreground font-medium">Temp (°C)</th>
               <th className="text-right py-2 px-3 text-muted-foreground font-medium">Umid (%)</th>
               <th className="text-center py-2 px-3 text-muted-foreground font-medium">Presença</th>
-              <th className="text-right py-2 px-3 text-muted-foreground font-medium">Estoque</th>
+              
             </tr>
           </thead>
           <tbody>
@@ -46,9 +46,6 @@ export function ReadingsTable({ readings }: ReadingsTableProps) {
                     }`} />
                     {reading.presenca ? 'Sim' : 'Não'}
                   </span>
-                </td>
-                <td className="py-2 px-3 text-right font-mono text-warning-custom">
-                  {reading.estoque}
                 </td>
               </tr>
             ))}
