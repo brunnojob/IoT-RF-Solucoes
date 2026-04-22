@@ -10,7 +10,7 @@ from supabase import create_client
 
 # Configurações Supabase
 SUPABASE_URL = "https://ngzkahxyraioonptmawd.supabase.co"
-SUPABASE_KEY = "sb_publishable_D6MsiNnKgrENOOB6sc5Xig_Lk7lD0yu"
+SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5nemthaHh5cmFpb29ucHRtYXdkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4MTMyODcsImV4cCI6MjA5MjM4OTI4N30.eBuPX6LLXKvXd3AfbRExAohL2lOwWVZBOJWJHCyxAuo"
 
 # Configurações MQTT
 MQTT_BROKER = "192.168.206.21"
