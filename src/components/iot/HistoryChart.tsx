@@ -1,5 +1,5 @@
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
-import { SensorReading } from '@/lib/simulatedData';
+import { SensorReading } from '@/hooks/useIoTData';
 
 interface HistoryChartProps {
   readings: SensorReading[];
