@@ -1,4 +1,4 @@
-import { SensorReading } from '@/lib/simulatedData';
+import { SensorReading } from '@/hooks/useIoTData';
 
 interface ReadingsTableProps {
   readings: SensorReading[];
