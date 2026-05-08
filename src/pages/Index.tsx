@@ -1,30 +1,28 @@
-import { Thermometer, Droplets, Package, LogOut } from 'lucide-react';
+import { Thermometer, Droplets, Activity, LogOut } from 'lucide-react';
 import { useIoTData } from '@/hooks/useIoTData';
 import { useAuth } from '@/contexts/AuthContext';
+import { useWhatsAppAlerts } from '@/hooks/useWhatsAppAlerts';
 import { Button } from '@/components/ui/button';
-import { useEstoque } from '@/hooks/useEstoque';
 import { SensorCard } from '@/components/iot/SensorCard';
 import { PresenceCard } from '@/components/iot/PresenceCard';
 import { ConnectionIndicator } from '@/components/iot/ConnectionIndicator';
 import { HistoryChart } from '@/components/iot/HistoryChart';
 import { ReadingsTable } from '@/components/iot/ReadingsTable';
-import { EstoqueSection } from '@/components/iot/EstoqueSection';
-import { MovimentacoesTable } from '@/components/iot/MovimentacoesTable';
+import { SensorInfoSection } from '@/components/iot/SensorInfoSection';
 
 const Index = () => {
   const { readings, latestReading, isConnected } = useIoTData();
-  const { produtos, movimentacoes, loading, adicionarProduto, entradaEstoque, saidaEstoque } = useEstoque();
   const { logout } = useAuth();
+
+  // Dispara mensagens no WhatsApp quando os limites são ultrapassados
+  useWhatsAppAlerts(latestReading);
 
   return (
     <div className="min-h-screen bg-background p-4 md:p-6 lg:p-8">
       <div className="max-w-7xl mx-auto space-y-6">
-
         <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-foreground">
-              Painel de Monitoramento IoT
-            </h1>
+            <h1 className="text-2xl font-bold text-foreground">Painel de Monitoramento IoT</h1>
             <p className="text-sm text-muted-foreground mt-1">
               Monitoramento empresarial em tempo real — Arduino/ESP32
             </p>
@@ -37,7 +35,7 @@ const Index = () => {
           </div>
         </header>
 
-        <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <SensorCard
             title="Temperatura"
             value={latestReading?.temperatura ?? '--'}
@@ -53,13 +51,6 @@ const Index = () => {
             variant="accent"
           />
           <PresenceCard detected={latestReading?.presenca ?? false} />
-          <SensorCard
-            title="Estoque Total"
-            value={produtos.reduce((sum, p) => sum + p.quantidade_atual, 0) || '--'}
-            unit="un"
-            icon={<Package className="w-4 h-4" />}
-            variant="warning"
-          />
         </section>
 
         <section>
@@ -67,17 +58,7 @@ const Index = () => {
         </section>
 
         <section>
-          <EstoqueSection
-            produtos={produtos}
-            loading={loading}
-            onAdicionarProduto={adicionarProduto}
-            onEntrada={entradaEstoque}
-            onSaida={saidaEstoque}
-          />
-        </section>
-
-        <section>
-          <MovimentacoesTable movimentacoes={movimentacoes} produtos={produtos} />
+          <SensorInfoSection latestReading={latestReading} />
         </section>
 
         <section>
