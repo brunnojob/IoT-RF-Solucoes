@@ -20,6 +20,15 @@ function formatData(iso?: string) {
   return new Date(iso).toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' });
 }
 
+function formatDiaSemana(iso?: string) {
+  if (!iso) return '---';
+  const dia = new Date(iso).toLocaleDateString('pt-BR', {
+    timeZone: 'America/Sao_Paulo',
+    weekday: 'long',
+  });
+  return dia.charAt(0).toUpperCase() + dia.slice(1);
+}
+
 export function SensorInfoSection({ latestReading }: SensorInfoSectionProps) {
   const temp = latestReading?.temperatura;
   const umi = latestReading?.umidade;
@@ -36,7 +45,7 @@ export function SensorInfoSection({ latestReading }: SensorInfoSectionProps) {
 
   return (
     <div className="bg-card rounded-lg border border-border p-5">
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
         <div className="flex items-center gap-2">
           <Activity className="w-4 h-4 text-primary" />
           <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
@@ -45,7 +54,10 @@ export function SensorInfoSection({ latestReading }: SensorInfoSectionProps) {
         </div>
         <div className="flex items-center gap-1.5 text-xs text-muted-foreground font-mono">
           <Clock className="w-3.5 h-3.5" />
+          <span className="text-primary font-semibold">{formatDiaSemana(latestReading?.created_at)}</span>
+          <span>·</span>
           <span>{formatData(latestReading?.created_at)}</span>
+          <span>·</span>
           <span className="text-foreground font-bold">{formatHora(latestReading?.created_at)}</span>
         </div>
       </div>
@@ -100,7 +112,7 @@ export function SensorInfoSection({ latestReading }: SensorInfoSectionProps) {
         <div className="mt-4 p-3 rounded-md bg-destructive/10 border border-destructive/30 flex items-center gap-2">
           <ShieldAlert className="w-4 h-4 text-destructive shrink-0" />
           <p className="text-xs text-destructive font-medium">
-            Alerta ativo — notificação enviada ao WhatsApp dos responsáveis.
+            Alerta ativo — SMS enviado aos responsáveis com data, hora e dia da semana.
           </p>
         </div>
       )}
