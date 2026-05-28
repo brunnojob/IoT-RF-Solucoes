@@ -9,10 +9,13 @@ import { ConnectionIndicator } from '@/components/iot/ConnectionIndicator';
 import { HistoryChart } from '@/components/iot/HistoryChart';
 import { ReadingsTable } from '@/components/iot/ReadingsTable';
 import { SensorInfoSection } from '@/components/iot/SensorInfoSection';
+import { AlertsLogSection } from '@/components/iot/AlertsLogSection';
+import { useAlertsLog } from '@/hooks/useAlertsLog';
 
 const Index = () => {
   const { readings, latestReading, isConnected } = useIoTData();
   const { logout } = useAuth();
+  const { entries: alertEntries, clear: clearAlerts } = useAlertsLog(latestReading);
 
   // Dispara mensagens no WhatsApp quando os limites são ultrapassados
   useWhatsAppAlerts(latestReading);
@@ -59,6 +62,10 @@ const Index = () => {
 
         <section>
           <SensorInfoSection latestReading={latestReading} />
+        </section>
+
+        <section>
+          <AlertsLogSection entries={alertEntries} onClear={clearAlerts} />
         </section>
 
         <section>
