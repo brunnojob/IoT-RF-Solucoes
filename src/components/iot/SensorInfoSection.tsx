@@ -112,7 +112,7 @@ export function SensorInfoSection({ latestReading }: SensorInfoSectionProps) {
         <div className="mt-4 p-3 rounded-md bg-destructive/10 border border-destructive/30 flex items-center gap-2">
           <ShieldAlert className="w-4 h-4 text-destructive shrink-0" />
           <p className="text-xs text-destructive font-medium">
-            Alerta ativo — notificação enviada ao WhatsApp dos responsáveis.
+            Alerta ativo — SMS enviado aos responsáveis com data, hora e dia da semana.
           </p>
         </div>
       )}
