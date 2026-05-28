@@ -20,6 +20,15 @@ function formatData(iso?: string) {
   return new Date(iso).toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' });
 }
 
+function formatDiaSemana(iso?: string) {
+  if (!iso) return '---';
+  const dia = new Date(iso).toLocaleDateString('pt-BR', {
+    timeZone: 'America/Sao_Paulo',
+    weekday: 'long',
+  });
+  return dia.charAt(0).toUpperCase() + dia.slice(1);
+}
+
 export function SensorInfoSection({ latestReading }: SensorInfoSectionProps) {
   const temp = latestReading?.temperatura;
   const umi = latestReading?.umidade;
