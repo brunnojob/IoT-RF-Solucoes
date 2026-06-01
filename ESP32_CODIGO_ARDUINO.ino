@@ -7,7 +7,8 @@ const char* WIFI_SSID     = "b";
 const char* WIFI_PASSWORD = "teste123";
 
 // Broker MQTT (PC rodando Mosquitto + bridge Python)
-const char* MQTT_BROKER   = "192.168.206.21";
+// Pelo seu netstat atual, o IP do computador/broker é 10.145.67.21.
+const char* MQTT_BROKER   = "10.145.67.21";
 const int   MQTT_PORT     = 1883;
 const char* MQTT_TOPIC    = "iot/sensores";
 
