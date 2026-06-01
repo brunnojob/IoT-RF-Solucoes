@@ -21,22 +21,69 @@ DHT dht(DHT_PIN, DHT_TYPE);
 WiFiClient wifiClient;
 PubSubClient mqtt(wifiClient);
 
+unsigned long ultimaTentativaMQTT = 0;
+
+void imprimirRede() {
+  Serial.println("\n===== DIAGNOSTICO WIFI =====");
+  Serial.print("SSID: "); Serial.println(WiFi.SSID());
+  Serial.print("IP ESP32: "); Serial.println(WiFi.localIP());
+  Serial.print("Gateway: "); Serial.println(WiFi.gatewayIP());
+  Serial.print("Mascara: "); Serial.println(WiFi.subnetMask());
+  Serial.print("RSSI: "); Serial.print(WiFi.RSSI()); Serial.println(" dBm");
+  Serial.print("Broker MQTT: "); Serial.print(MQTT_BROKER); Serial.print(":"); Serial.println(MQTT_PORT);
+  Serial.println("============================\n");
+}
+
+bool testarTCPBroker() {
+  WiFiClient teste;
+  Serial.print("Testando acesso TCP ao broker ");
+  Serial.print(MQTT_BROKER);
+  Serial.print(":");
+  Serial.print(MQTT_PORT);
+  Serial.print("... ");
+
+  if (teste.connect(MQTT_BROKER, MQTT_PORT)) {
+    Serial.println("OK");
+    teste.stop();
+    return true;
+  }
+
+  Serial.println("FALHOU");
+  Serial.println("O ESP32 nao consegue chegar no Mosquitto. Verifique firewall, IP do PC, rede 2.4GHz e isolamento AP/clientes.");
+  return false;
+}
+
 void conectarWiFi() {
+  WiFi.mode(WIFI_STA);
+  WiFi.disconnect(true);
+  delay(300);
+  Serial.print("Conectando WiFi");
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.print(".");
   }
-  Serial.println("\nWiFi conectado: " + WiFi.localIP().toString());
+  Serial.println(" OK");
+  imprimirRede();
 }
 
 void conectarMQTT() {
-  while (!mqtt.connected()) {
-    if (mqtt.connect("ESP32_Sensor")) {
-      Serial.println("MQTT conectado");
-    } else {
-      delay(2000);
-    }
+  if (mqtt.connected()) return;
+  if (millis() - ultimaTentativaMQTT < 3000) return;
+  ultimaTentativaMQTT = millis();
+
+  Serial.print("Conectando MQTT... ");
+  if (!testarTCPBroker()) return;
+
+  String clientId = "ESP32_Sensor_" + WiFi.macAddress();
+  clientId.replace(":", "");
+
+  if (mqtt.connect(clientId.c_str())) {
+    Serial.println("MQTT conectado");
+  } else {
+    Serial.print("Falhou (rc=");
+    Serial.print(mqtt.state());
+    Serial.println("). Tentando novamente em 3s...");
   }
 }
 
@@ -46,6 +93,8 @@ void setup() {
   dht.begin();
   conectarWiFi();
   mqtt.setServer(MQTT_BROKER, MQTT_PORT);
+  mqtt.setSocketTimeout(8);
+  mqtt.setKeepAlive(30);
 }
 
 void loop() {
