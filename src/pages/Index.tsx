@@ -1,7 +1,7 @@
 import { Thermometer, Droplets, Activity, LogOut } from 'lucide-react';
 import { useIoTData } from '@/hooks/useIoTData';
 import { useAuth } from '@/contexts/AuthContext';
-import { useWhatsAppAlerts } from '@/hooks/useWhatsAppAlerts';
+import { useSmsAlerts } from '@/hooks/useSmsAlerts';
 import { Button } from '@/components/ui/button';
 import { SensorCard } from '@/components/iot/SensorCard';
 import { PresenceCard } from '@/components/iot/PresenceCard';
@@ -17,8 +17,8 @@ const Index = () => {
   const { logout } = useAuth();
   const { entries: alertEntries, clear: clearAlerts } = useAlertsLog(latestReading);
 
-  // Dispara mensagens no WhatsApp quando os limites são ultrapassados
-  useWhatsAppAlerts(latestReading);
+  // Dispara SMS via Twilio quando os limites são ultrapassados
+  useSmsAlerts(latestReading);
 
   return (
     <div className="min-h-screen bg-background p-4 md:p-6 lg:p-8">

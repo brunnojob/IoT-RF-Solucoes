@@ -1,10 +1,12 @@
-import { corsHeaders } from "jsr:@supabase/supabase-js@2/cors";
+import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 
 const DESTINATARIOS = [
-  "5521997670015",
-  "5521971557079",
-  "5521991711252",
+  "+5521997670015",
+  "+5521971557079",
+  "+5521991711252",
 ];
+
+const GATEWAY_URL = "https://connector-gateway.lovable.dev/twilio";
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -21,42 +23,43 @@ Deno.serve(async (req) => {
       });
     }
 
-    const instanceId = Deno.env.get("ZAPI_INSTANCE_ID");
-    const instanceToken = Deno.env.get("ZAPI_INSTANCE_TOKEN");
-    const clientToken = Deno.env.get("ZAPI_CLIENT_TOKEN");
+    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+    const TWILIO_API_KEY = Deno.env.get("TWILIO_API_KEY");
+    const FROM = Deno.env.get("TWILIO_FROM_NUMBER");
 
-    if (!instanceId || !instanceToken || !clientToken) {
+    if (!LOVABLE_API_KEY || !TWILIO_API_KEY || !FROM) {
       return new Response(
-        JSON.stringify({ error: "Z-API não configurada (ZAPI_INSTANCE_ID, ZAPI_INSTANCE_TOKEN, ZAPI_CLIENT_TOKEN)" }),
+        JSON.stringify({
+          error: "Twilio não configurado (LOVABLE_API_KEY / TWILIO_API_KEY / TWILIO_FROM_NUMBER)",
+        }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    const url = `https://api.z-api.io/instances/${instanceId}/token/${instanceToken}/send-text`;
-
     const results = await Promise.all(
-      DESTINATARIOS.map(async (phone) => {
-        const r = await fetch(url, {
+      DESTINATARIOS.map(async (To) => {
+        const r = await fetch(`${GATEWAY_URL}/Messages.json`, {
           method: "POST",
           headers: {
-            "Content-Type": "application/json",
-            "Client-Token": clientToken,
+            Authorization: `Bearer ${LOVABLE_API_KEY}`,
+            "X-Connection-Api-Key": TWILIO_API_KEY,
+            "Content-Type": "application/x-www-form-urlencoded",
           },
-          body: JSON.stringify({ phone, message }),
+          body: new URLSearchParams({ To, From: FROM, Body: message }),
         });
         const data = await r.json().catch(() => ({}));
-        return { phone, status: r.status, ok: r.ok, data };
+        return { To, status: r.status, ok: r.ok, data };
       })
     );
 
-    console.log(`[whatsapp:${kind}] enviados:`, JSON.stringify(results));
+    console.log(`[sms:${kind}] enviados:`, JSON.stringify(results));
 
     return new Response(JSON.stringify({ success: true, results }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (e) {
     const msg = e instanceof Error ? e.message : "erro desconhecido";
-    console.error("Erro send-whatsapp-alert:", msg);
+    console.error("Erro send-sms-alert:", msg);
     return new Response(JSON.stringify({ error: msg }), {
       status: 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
