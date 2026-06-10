@@ -28,18 +28,18 @@ export function useSmsAlerts(latest: SensorReading | null) {
         message: `ALERTA PRESENCA: movimento detectado em zona critica. Temp ${latest.temperatura.toFixed(1)}C / Umid ${latest.umidade.toFixed(0)}%`,
       });
     }
-    if ((latest.temperatura > TEMP_MAX || latest.temperatura < TEMP_MIN) &&
+    if (latest.temperatura > TEMP_CRITICA &&
         now - lastSentRef.current.temperatura > COOLDOWN_MS) {
       alerts.push({
         kind: 'temperatura',
-        message: `ALERTA TEMPERATURA: ${latest.temperatura.toFixed(1)}C (faixa ${TEMP_MIN}-${TEMP_MAX}C)`,
+        message: `ALERTA CRITICO TEMPERATURA: ${latest.temperatura.toFixed(1)}C (limite >${TEMP_CRITICA}C)`,
       });
     }
-    if ((latest.umidade > UMI_MAX || latest.umidade < UMI_MIN) &&
+    if (latest.umidade > UMI_CRITICA &&
         now - lastSentRef.current.umidade > COOLDOWN_MS) {
       alerts.push({
         kind: 'umidade',
-        message: `ALERTA UMIDADE: ${latest.umidade.toFixed(0)}% (faixa ${UMI_MIN}-${UMI_MAX}%)`,
+        message: `ALERTA CRITICO UMIDADE: ${latest.umidade.toFixed(0)}% (limite >${UMI_CRITICA}%)`,
       });
     }
 
