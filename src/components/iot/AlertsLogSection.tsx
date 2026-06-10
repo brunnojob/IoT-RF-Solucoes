@@ -1,10 +1,8 @@
-import { AlertTriangle, Thermometer, Droplets, ShieldX, Siren, Trash2, Lightbulb } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { AlertTriangle, Thermometer, Droplets, ShieldX, Siren, Lightbulb } from 'lucide-react';
 import { AlertLogEntry, AlertType } from '@/hooks/useAlertsLog';
 
 interface AlertsLogSectionProps {
   entries: AlertLogEntry[];
-  onClear: () => void;
 }
 
 const TZ = 'America/Sao_Paulo';
@@ -26,27 +24,19 @@ const iconFor = (tipo: AlertType) => {
   return ShieldX;
 };
 
-export function AlertsLogSection({ entries, onClear }: AlertsLogSectionProps) {
-  // Apenas alertas críticos
-  const criticos = entries;
-
+export function AlertsLogSection({ entries }: AlertsLogSectionProps) {
   return (
     <div className="bg-card rounded-lg border border-border p-5">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <Siren className="w-4 h-4 text-destructive" />
           <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
-            Alertas Críticos
+            Alertas Críticos · Agora
           </h3>
           <span className="text-[10px] font-mono text-muted-foreground ml-1">
             (Horário de Brasília · RJ)
           </span>
         </div>
-        {criticos.length > 0 && (
-          <Button variant="ghost" size="sm" onClick={onClear} className="h-7 text-xs">
-            <Trash2 className="w-3.5 h-3.5 mr-1" /> Limpar
-          </Button>
-        )}
       </div>
 
       {/* Legenda do LED azul onboard ESP32 */}
@@ -73,10 +63,10 @@ export function AlertsLogSection({ entries, onClear }: AlertsLogSectionProps) {
         </ul>
       </div>
 
-      {criticos.length === 0 ? (
+      {entries.length === 0 ? (
         <div className="text-center py-8 text-sm text-muted-foreground">
           <AlertTriangle className="w-8 h-8 mx-auto mb-2 opacity-40" />
-          Nenhum alerta crítico registrado ainda.
+          Nenhum alerta crítico ativo no momento.
         </div>
       ) : (
         <div className="overflow-x-auto">
@@ -92,10 +82,10 @@ export function AlertsLogSection({ entries, onClear }: AlertsLogSectionProps) {
               </tr>
             </thead>
             <tbody>
-              {criticos.map((e) => {
+              {entries.map((e) => {
                 const Icon = iconFor(e.tipo);
                 return (
-                  <tr key={e.id} className="border-b border-border/40 hover:bg-secondary/30">
+                  <tr key={e.id} className="border-b border-border/40 hover:bg-secondary/30 animate-pulse">
                     <td className="py-2 px-2">
                       <div className="flex items-center gap-1.5 text-destructive">
                         <Icon className="w-3.5 h-3.5" />

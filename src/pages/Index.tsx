@@ -15,7 +15,7 @@ import { useAlertsLog } from '@/hooks/useAlertsLog';
 const Index = () => {
   const { readings, latestReading, isConnected } = useIoTData();
   const { logout } = useAuth();
-  const { entries: alertEntries, clear: clearAlerts } = useAlertsLog(latestReading);
+  const { entries: alertEntries } = useAlertsLog(latestReading);
 
   // Dispara SMS via Twilio quando os limites são ultrapassados
   useSmsAlerts(latestReading);
@@ -65,7 +65,7 @@ const Index = () => {
         </section>
 
         <section>
-          <AlertsLogSection entries={alertEntries} onClear={clearAlerts} />
+          <AlertsLogSection entries={alertEntries} />
         </section>
 
         <section>
