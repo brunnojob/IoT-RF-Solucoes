@@ -15,10 +15,8 @@ const STORAGE_KEY = 'rf_alertas_sms_log';
 const MAX_ENTRIES = 100;
 const COOLDOWN_MS = 60_000;
 
-const TEMP_MIN = 22;
-const TEMP_MAX = 30;
-const UMI_MIN = 20;
-const UMI_MAX = 70;
+const TEMP_CRITICA = 32; // > 32 °C
+const UMI_CRITICA = 60;  // > 60 %
 
 function loadLog(): AlertLogEntry[] {
   try {
@@ -63,16 +61,12 @@ export function useAlertsLog(latest: SensorReading | null) {
       });
     };
 
-    if (latest.temperatura > TEMP_MAX) {
-      push('temperatura', `Temperatura acima do limite (>${TEMP_MAX}°C)`, `${latest.temperatura.toFixed(1)} °C`);
-    } else if (latest.temperatura < TEMP_MIN) {
-      push('temperatura', `Temperatura abaixo do limite (<${TEMP_MIN}°C)`, `${latest.temperatura.toFixed(1)} °C`);
+    if (latest.temperatura > TEMP_CRITICA) {
+      push('temperatura', `Temperatura crítica (>${TEMP_CRITICA}°C)`, `${latest.temperatura.toFixed(1)} °C`);
     }
 
-    if (latest.umidade > UMI_MAX) {
-      push('umidade', `Umidade acima do limite (>${UMI_MAX}%)`, `${latest.umidade.toFixed(0)} %`);
-    } else if (latest.umidade < UMI_MIN) {
-      push('umidade', `Umidade abaixo do limite (<${UMI_MIN}%)`, `${latest.umidade.toFixed(0)} %`);
+    if (latest.umidade > UMI_CRITICA) {
+      push('umidade', `Umidade crítica (>${UMI_CRITICA}%)`, `${latest.umidade.toFixed(0)} %`);
     }
 
     if (latest.presenca) {
