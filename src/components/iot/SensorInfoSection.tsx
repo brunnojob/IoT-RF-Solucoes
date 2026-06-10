@@ -84,8 +84,8 @@ export function SensorInfoSection({ latestReading }: SensorInfoSectionProps) {
           </p>
           <p className="text-xs text-muted-foreground mt-1">
             {tempAlerta
-              ? (temp! > TEMP_MAX ? `Acima do limite (>${TEMP_MAX}°C)` : `Abaixo do limite (<${TEMP_MIN}°C)`)
-              : `Faixa OK (${TEMP_MIN}-${TEMP_MAX}°C)`}
+              ? `CRÍTICO: acima de ${TEMP_CRITICA}°C`
+              : `OK (limite >${TEMP_CRITICA}°C)`}
           </p>
         </div>
 
@@ -100,8 +100,8 @@ export function SensorInfoSection({ latestReading }: SensorInfoSectionProps) {
           </p>
           <p className="text-xs text-muted-foreground mt-1">
             {umiAlerta
-              ? (umi! > UMI_MAX ? `Acima do limite (>${UMI_MAX}%)` : `Abaixo do limite (<${UMI_MIN}%)`)
-              : `Faixa OK (${UMI_MIN}-${UMI_MAX}%)`}
+              ? `CRÍTICO: acima de ${UMI_CRITICA}%`
+              : `OK (limite >${UMI_CRITICA}%)`}
           </p>
         </div>
       </div>
