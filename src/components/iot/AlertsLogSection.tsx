@@ -1,4 +1,4 @@
-import { AlertTriangle, Thermometer, Droplets, ShieldX, MessageSquare, Trash2 } from 'lucide-react';
+import { AlertTriangle, Thermometer, Droplets, ShieldX, Siren, Trash2, Lightbulb } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { AlertLogEntry, AlertType } from '@/hooks/useAlertsLog';
 
@@ -27,26 +27,53 @@ const iconFor = (tipo: AlertType) => {
 };
 
 export function AlertsLogSection({ entries, onClear }: AlertsLogSectionProps) {
+  // Apenas alertas críticos
+  const criticos = entries;
+
   return (
     <div className="bg-card rounded-lg border border-border p-5">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <MessageSquare className="w-4 h-4 text-destructive" />
+          <Siren className="w-4 h-4 text-destructive" />
           <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
-            Registros de Alertas Críticos · SMS
+            Alertas Críticos
           </h3>
           <span className="text-[10px] font-mono text-muted-foreground ml-1">
             (Horário de Brasília · RJ)
           </span>
         </div>
-        {entries.length > 0 && (
+        {criticos.length > 0 && (
           <Button variant="ghost" size="sm" onClick={onClear} className="h-7 text-xs">
             <Trash2 className="w-3.5 h-3.5 mr-1" /> Limpar
           </Button>
         )}
       </div>
 
-      {entries.length === 0 ? (
+      {/* Legenda do LED azul onboard ESP32 */}
+      <div className="mb-4 rounded-md border border-border/60 bg-secondary/30 p-3">
+        <div className="flex items-center gap-2 mb-2">
+          <Lightbulb className="w-3.5 h-3.5 text-primary" />
+          <span className="text-xs font-semibold uppercase tracking-wider text-foreground">
+            LED Azul Onboard · ESP32
+          </span>
+        </div>
+        <ul className="space-y-1.5 text-xs text-muted-foreground">
+          <li className="flex items-center gap-2">
+            <span className="inline-block w-2.5 h-2.5 rounded-full bg-muted-foreground/40" />
+            <span><strong className="text-foreground">APAGADO</strong> — Tudo OK</span>
+          </li>
+          <li className="flex items-center gap-2">
+            <span className="inline-block w-2.5 h-2.5 rounded-full bg-blue-500 animate-pulse" />
+            <span><strong className="text-foreground">PISCANDO (250 ms)</strong> — Movimento detectado (PIR HIGH)</span>
+          </li>
+          <li className="flex items-center gap-2">
+            <span className="inline-block w-2.5 h-2.5 rounded-full bg-destructive shadow-[0_0_8px_hsl(var(--destructive))]" />
+            <span><strong className="text-foreground">ACESO FIXO</strong> — Emergência: temperatura &gt; 32 °C <em className="text-[10px]">(prioridade sobre o piscar)</em></span>
+          </li>
+        </ul>
+      </div>
+
+      {criticos.length === 0 ? (
         <div className="text-center py-8 text-sm text-muted-foreground">
           <AlertTriangle className="w-8 h-8 mx-auto mb-2 opacity-40" />
           Nenhum alerta crítico registrado ainda.
@@ -65,7 +92,7 @@ export function AlertsLogSection({ entries, onClear }: AlertsLogSectionProps) {
               </tr>
             </thead>
             <tbody>
-              {entries.map((e) => {
+              {criticos.map((e) => {
                 const Icon = iconFor(e.tipo);
                 return (
                   <tr key={e.id} className="border-b border-border/40 hover:bg-secondary/30">
