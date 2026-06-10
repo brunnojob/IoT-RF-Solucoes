@@ -3,11 +3,10 @@ import { supabase as cloudSupabase } from '@/integrations/supabase/client';
 import { SensorReading } from './useIoTData';
 import { toast } from '@/hooks/use-toast';
 
-const TEMP_MIN = 22;
-const TEMP_MAX = 30;
-const UMI_MIN = 20;
-const UMI_MAX = 70;
+const TEMP_CRITICA = 32;   // > 32 °C dispara alerta crítico
+const UMI_CRITICA = 60;    // > 60 % dispara alerta crítico
 const COOLDOWN_MS = 60_000;
+// Presença: dispara IMEDIATAMENTE ao detectar sinal (respeitando cooldown)
 
 type AlertKind = 'presenca' | 'temperatura' | 'umidade';
 
