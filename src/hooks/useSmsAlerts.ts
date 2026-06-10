@@ -3,11 +3,10 @@ import { supabase as cloudSupabase } from '@/integrations/supabase/client';
 import { SensorReading } from './useIoTData';
 import { toast } from '@/hooks/use-toast';
 
-const TEMP_MIN = 22;
-const TEMP_MAX = 30;
-const UMI_MIN = 20;
-const UMI_MAX = 70;
+const TEMP_CRITICA = 32;   // > 32 °C dispara alerta crítico
+const UMI_CRITICA = 60;    // > 60 % dispara alerta crítico
 const COOLDOWN_MS = 60_000;
+// Presença: dispara IMEDIATAMENTE ao detectar sinal (respeitando cooldown)
 
 type AlertKind = 'presenca' | 'temperatura' | 'umidade';
 
@@ -29,18 +28,18 @@ export function useSmsAlerts(latest: SensorReading | null) {
         message: `ALERTA PRESENCA: movimento detectado em zona critica. Temp ${latest.temperatura.toFixed(1)}C / Umid ${latest.umidade.toFixed(0)}%`,
       });
     }
-    if ((latest.temperatura > TEMP_MAX || latest.temperatura < TEMP_MIN) &&
+    if (latest.temperatura > TEMP_CRITICA &&
         now - lastSentRef.current.temperatura > COOLDOWN_MS) {
       alerts.push({
         kind: 'temperatura',
-        message: `ALERTA TEMPERATURA: ${latest.temperatura.toFixed(1)}C (faixa ${TEMP_MIN}-${TEMP_MAX}C)`,
+        message: `ALERTA CRITICO TEMPERATURA: ${latest.temperatura.toFixed(1)}C (limite >${TEMP_CRITICA}C)`,
       });
     }
-    if ((latest.umidade > UMI_MAX || latest.umidade < UMI_MIN) &&
+    if (latest.umidade > UMI_CRITICA &&
         now - lastSentRef.current.umidade > COOLDOWN_MS) {
       alerts.push({
         kind: 'umidade',
-        message: `ALERTA UMIDADE: ${latest.umidade.toFixed(0)}% (faixa ${UMI_MIN}-${UMI_MAX}%)`,
+        message: `ALERTA CRITICO UMIDADE: ${latest.umidade.toFixed(0)}% (limite >${UMI_CRITICA}%)`,
       });
     }
 

@@ -5,10 +5,8 @@ interface SensorInfoSectionProps {
   latestReading: SensorReading | null;
 }
 
-const TEMP_MIN = 22;
-const TEMP_MAX = 30;
-const UMI_MIN = 20;
-const UMI_MAX = 70;
+const TEMP_CRITICA = 32; // > 32 °C
+const UMI_CRITICA = 60;  // > 60 %
 
 function formatHora(iso?: string) {
   if (!iso) return '--:--:--';
@@ -34,8 +32,8 @@ export function SensorInfoSection({ latestReading }: SensorInfoSectionProps) {
   const umi = latestReading?.umidade;
   const presenca = latestReading?.presenca ?? false;
 
-  const tempAlerta = temp !== undefined && (temp > TEMP_MAX || temp < TEMP_MIN);
-  const umiAlerta = umi !== undefined && (umi > UMI_MAX || umi < UMI_MIN);
+  const tempAlerta = temp !== undefined && temp > TEMP_CRITICA;
+  const umiAlerta = umi !== undefined && umi > UMI_CRITICA;
 
   const presencaStatus = presenca
     ? { label: 'ZONA CRÍTICA', icon: ShieldX, color: 'text-destructive', bg: 'bg-destructive/10', border: 'border-destructive/30' }
@@ -86,8 +84,8 @@ export function SensorInfoSection({ latestReading }: SensorInfoSectionProps) {
           </p>
           <p className="text-xs text-muted-foreground mt-1">
             {tempAlerta
-              ? (temp! > TEMP_MAX ? `Acima do limite (>${TEMP_MAX}°C)` : `Abaixo do limite (<${TEMP_MIN}°C)`)
-              : `Faixa OK (${TEMP_MIN}-${TEMP_MAX}°C)`}
+              ? `CRÍTICO: acima de ${TEMP_CRITICA}°C`
+              : `OK (limite >${TEMP_CRITICA}°C)`}
           </p>
         </div>
 
@@ -102,8 +100,8 @@ export function SensorInfoSection({ latestReading }: SensorInfoSectionProps) {
           </p>
           <p className="text-xs text-muted-foreground mt-1">
             {umiAlerta
-              ? (umi! > UMI_MAX ? `Acima do limite (>${UMI_MAX}%)` : `Abaixo do limite (<${UMI_MIN}%)`)
-              : `Faixa OK (${UMI_MIN}-${UMI_MAX}%)`}
+              ? `CRÍTICO: acima de ${UMI_CRITICA}%`
+              : `OK (limite >${UMI_CRITICA}%)`}
           </p>
         </div>
       </div>
