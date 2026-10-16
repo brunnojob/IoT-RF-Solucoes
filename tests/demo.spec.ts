@@ -8,6 +8,7 @@ test('shows recordings without connecting to hardware services', async ({ page }
   await expect(page.getByRole('heading', { name: 'Physical signals. Visible intelligence.' })).toBeVisible();
   await expect(page.locator('video')).toHaveCount(2);
   for (const video of await page.locator('video').all()) {
+    await video.scrollIntoViewIfNeeded();
     await expect(video).toHaveAttribute('autoplay', '');
     await expect(video).toHaveJSProperty('muted', true);
     await expect.poll(() => video.evaluate(element => (element as HTMLVideoElement).readyState)).toBeGreaterThanOrEqual(2);
