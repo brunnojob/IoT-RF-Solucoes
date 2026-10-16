@@ -1,13 +1,12 @@
--- ============================================================
--- Dashboard IoT — Script completo para o SQL Editor do Supabase
--- Execute este arquivo inteiro de uma vez no SQL Editor.
--- ============================================================
+
+
+
+
 
 DROP TABLE IF EXISTS sensor_readings CASCADE;
 
--- ------------------------------------------------------------
--- Tabela: leituras dos sensores (DHT11 + PIR)
--- ------------------------------------------------------------
+
+
 CREATE TABLE sensor_readings (
   id          BIGSERIAL PRIMARY KEY,
   temperatura REAL    NOT NULL,
@@ -24,9 +23,8 @@ CREATE POLICY "Leitura pública sensor_readings"
 CREATE POLICY "Inserção pública sensor_readings"
   ON sensor_readings FOR INSERT TO anon WITH CHECK (true);
 
--- ------------------------------------------------------------
--- Habilita Realtime
--- ------------------------------------------------------------
+
+
 DO $$
 BEGIN
   BEGIN

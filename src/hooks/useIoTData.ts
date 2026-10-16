@@ -14,7 +14,7 @@ export function useIoTData() {
   const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
-    // Carrega histórico inicial
+
     supabase
       .from('sensor_readings')
       .select('*')
@@ -24,7 +24,7 @@ export function useIoTData() {
         if (!error && data) setReadings(data as SensorReading[]);
       });
 
-    // Inscreve-se em novas leituras em tempo real
+
     const channel = supabase
       .channel('sensor_readings_realtime')
       .on(

@@ -5,8 +5,8 @@ interface SensorInfoSectionProps {
   latestReading: SensorReading | null;
 }
 
-const TEMP_CRITICA = 32; // > 32 °C
-const UMI_CRITICA = 60;  // > 60 %
+const TEMP_CRITICA = 32;
+const UMI_CRITICA = 60;
 
 function formatHora(iso?: string) {
   if (!iso) return '--:--:--';
@@ -61,7 +61,7 @@ export function SensorInfoSection({ latestReading }: SensorInfoSectionProps) {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-        {/* Presença */}
+        {}
         <div className={`p-4 rounded-md border ${presencaStatus.border} ${presencaStatus.bg}`}>
           <div className="flex items-center gap-2 mb-2">
             <PresIcon className={`w-4 h-4 ${presencaStatus.color}`} />
@@ -73,7 +73,7 @@ export function SensorInfoSection({ latestReading }: SensorInfoSectionProps) {
           </p>
         </div>
 
-        {/* Temperatura */}
+        {}
         <div className={`p-4 rounded-md border ${tempAlerta ? 'border-destructive/30 bg-destructive/10' : 'border-border bg-secondary/30'}`}>
           <div className="flex items-center gap-2 mb-2">
             <Thermometer className={`w-4 h-4 ${tempAlerta ? 'text-destructive' : 'text-primary'}`} />
@@ -89,7 +89,7 @@ export function SensorInfoSection({ latestReading }: SensorInfoSectionProps) {
           </p>
         </div>
 
-        {/* Umidade */}
+        {}
         <div className={`p-4 rounded-md border ${umiAlerta ? 'border-destructive/30 bg-destructive/10' : 'border-border bg-secondary/30'}`}>
           <div className="flex items-center gap-2 mb-2">
             <Droplets className={`w-4 h-4 ${umiAlerta ? 'text-destructive' : 'text-primary'}`} />

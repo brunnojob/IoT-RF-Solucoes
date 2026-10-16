@@ -8,11 +8,11 @@ export interface AlertLogEntry {
   tipo: AlertType;
   mensagem: string;
   valor: string;
-  timestamp: string; // ISO
+  timestamp: string;
 }
 
-const TEMP_CRITICA = 32; // > 32 °C
-const UMI_CRITICA = 60;  // > 60 %
+const TEMP_CRITICA = 32;
+const UMI_CRITICA = 60;
 
 export function useAlertsLog(latest: SensorReading | null) {
   const entries = useMemo<AlertLogEntry[]>(() => {

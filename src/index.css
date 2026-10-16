@@ -4,7 +4,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* IoT Monitoring Dashboard Design System — All colors HSL */
+
 
 @layer base {
   :root {
@@ -38,7 +38,7 @@
 
     --radius: 0.75rem;
 
-    /* Custom IoT tokens */
+
     --success: 145 70% 45%;
     --success-foreground: 0 0% 100%;
     --warning: 35 90% 55%;

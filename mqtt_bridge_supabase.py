@@ -8,13 +8,13 @@ import json
 import paho.mqtt.client as mqtt
 from supabase import create_client
 
-# Configurações Supabase
+
 SUPABASE_URL = "https://ngzkahxyraioonptmawd.supabase.co"
 SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5nemthaHh5cmFpb29ucHRtYXdkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4MTMyODcsImV4cCI6MjA5MjM4OTI4N30.eBuPX6LLXKvXd3AfbRExAohL2lOwWVZBOJWJHCyxAuo"
 
-# Configurações MQTT
-# IP do computador onde o Mosquitto está rodando.
-# Pelo seu netstat atual, o broker está em 10.145.67.21:1883.
+
+
+
 MQTT_BROKER = "10.145.67.21"
 MQTT_PORT   = 1883
 MQTT_TOPIC  = "iot/sensores"

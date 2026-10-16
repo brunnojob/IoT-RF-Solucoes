@@ -39,7 +39,7 @@ export function AlertsLogSection({ entries }: AlertsLogSectionProps) {
         </div>
       </div>
 
-      {/* Legenda do LED azul onboard ESP32 */}
+      {}
       <div className="mb-4 rounded-md border border-border/60 bg-secondary/30 p-3">
         <div className="flex items-center gap-2 mb-2">
           <Lightbulb className="w-3.5 h-3.5 text-primary" />

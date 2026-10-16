@@ -1,36 +1,27 @@
-/*
-  SISTEMA RF - Monitoramento IoT (ESP32 + DHT11 + PIR)
-  Dados 100% REAIS (sem simulação).
 
-  LED AZUL ONBOARD (GPIO 2):
-    - APAGADO  -> Tudo OK
-    - PISCANDO -> Movimento detectado (PIR HIGH)
-    - ACESO FIXO -> Emergência: temperatura crítica (> 32 °C)
-                    (prioridade sobre o piscar)
-*/
 
 #include <WiFi.h>
 #include <PubSubClient.h>
 #include <DHT.h>
 
-// ====== Rede ======
+
 const char* WIFI_SSID     = "b";
 const char* WIFI_PASSWORD = "teste123";
 
-// ====== Broker MQTT (PC com Mosquitto + bridge Python) ======
+
 const char* MQTT_BROKER   = "10.145.67.21";
 const int   MQTT_PORT     = 1883;
 const char* MQTT_TOPIC    = "iot/sensores";
 
-// ====== Pinos ======
+
 #define DHT_PIN   4
 #define DHT_TYPE  DHT11
 #define PIR_PIN   27
-#define LED_PIN   2     // LED azul onboard do ESP32
+#define LED_PIN   2
 
-// ====== Limites de alerta crítico ======
-const float TEMP_CRITICA = 32.0;  // > 32 °C  -> LED fixo
-const float UMI_CRITICA  = 60.0;  // > 60 %   -> alerta no dashboard/SMS
+
+const float TEMP_CRITICA = 32.0;
+const float UMI_CRITICA  = 60.0;
 
 DHT dht(DHT_PIN, DHT_TYPE);
 WiFiClient wifiClient;
@@ -68,14 +59,14 @@ void conectarMQTT() {
   }
 }
 
-// Atualiza o LED conforme o estado real dos sensores
+
 void atualizarLED(bool presenca, float temperatura) {
-  // Prioridade 1: temperatura crítica -> LED FIXO
+
   if (temperatura > TEMP_CRITICA) {
     digitalWrite(LED_PIN, HIGH);
     return;
   }
-  // Prioridade 2: presença -> LED PISCANDO
+
   if (presenca) {
     if (millis() - ultimoBlink >= 250) {
       ultimoBlink = millis();
@@ -84,7 +75,7 @@ void atualizarLED(bool presenca, float temperatura) {
     }
     return;
   }
-  // Caso contrário: APAGADO (tudo OK)
+
   digitalWrite(LED_PIN, LOW);
 }
 
@@ -107,17 +98,17 @@ void loop() {
   if (!mqtt.connected()) conectarMQTT();
   mqtt.loop();
 
-  // Leitura REAL dos sensores
+
   float temperatura = dht.readTemperature();
   float umidade     = dht.readHumidity();
   bool  presenca    = digitalRead(PIR_PIN) == HIGH;
 
-  // Atualiza LED em tempo real (sem esperar o envio MQTT)
+
   if (!isnan(temperatura)) {
     atualizarLED(presenca, temperatura);
   }
 
-  // Publica a cada 2 segundos
+
   if (millis() - ultimoEnvio >= 2000) {
     ultimoEnvio = millis();
 
